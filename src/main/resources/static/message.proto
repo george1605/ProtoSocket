@@ -1,5 +1,9 @@
 syntax = "proto3";
 
+package com.example.protosocket;
+option java_package = "com.example.protosocket";
+option java_multiple_files = true;
+
 message Packet {
   uint64 from = 1;
   uint64 to = 2;
