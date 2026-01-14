@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+message Packet {
+  uint64 from = 1;
+  uint64 to = 2;
+  uint32 flags = 3;
+  map<string, string> opt = 4;
+  string data = 5;
+}
