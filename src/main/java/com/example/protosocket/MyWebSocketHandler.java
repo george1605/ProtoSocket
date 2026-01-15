@@ -1,6 +1,14 @@
 package com.example.protosocket;
 
 import com.google.protobuf.Message;
+import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.FluentQuery;
+import org.springframework.stereotype.Component;
 import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -9,16 +17,22 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import org.springframework.web.socket.handler.BinaryWebSocketHandler;
 
 import java.nio.ByteBuffer;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
+@Component
 public class MyWebSocketHandler extends BinaryWebSocketHandler {
+
+    private final PacketRepository packetRepository;
+    public MyWebSocketHandler(PacketRepository packetRepository)
+    {
+        this.packetRepository = packetRepository;
+    }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        Packet p = Packet.newBuilder().setFlags(MessageFlags.CONN.ordinal())
-                   .setFrom(0x1).putOpt("type", "connection").build();
-        byte[] bytes = p.toByteArray();
         System.out.println("New WebSocket connection: " + session.getId());
-        session.sendMessage(new BinaryMessage(bytes));
     }
 
     @Override
@@ -33,7 +47,8 @@ public class MyWebSocketHandler extends BinaryWebSocketHandler {
 
         Packet packet = Packet.parseFrom(bytes);
         System.out.println("Packet Data: " + packet.getData());
-        session.sendMessage(new BinaryMessage(bytes));
+        packetRepository.insert(PacketEntity.fromPacket(packet));
+        session.sendMessage(new BinaryMessage(outBytes));
     }
 
     @Override

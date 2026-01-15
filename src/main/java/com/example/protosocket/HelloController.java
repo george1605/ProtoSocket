@@ -14,10 +14,9 @@ import java.util.UUID;
 @RestController
 public class HelloController {
 
-    private final RestTemplateBuilder restTemplateBuilder;
-
-    public HelloController(RestTemplateBuilder restTemplateBuilder) {
-        this.restTemplateBuilder = restTemplateBuilder;
+    private final PacketRepository packetRepository;
+    public HelloController(PacketRepository packetRepository) {
+        this.packetRepository = packetRepository;
     }
 
     @GetMapping("/")
@@ -25,23 +24,25 @@ public class HelloController {
        return "<h1>Hello!</h1>";
     }
 
-    @PostMapping("/api/{path}")
-    public Map<String, Object> api(@PathVariable("path") String path, @RequestBody Object obj) {
+    @GetMapping("/api/{path}")
+    public Map<String, Object> getapi(@PathVariable("path") String path) {
         Map<String, Object> res = new HashMap<String, Object>();
         switch(path)
         {
-            case "adduser":
+            case "messages":
                 res.put("message", "OK");
                 res.put("code", 200);
-                res.put("userid", UUID.randomUUID().getLeastSignificantBits() & Long.MAX_VALUE);
-                return res;
-            case "getuser":
-                res.put("message", "OK");
-
+                res.put("response", packetRepository.findAll());
                 return res;
             default:
-                res.put("message", "Unknown ");
+                res.put("message", "Unknown Path");
                 return res;
         }
+    }
+
+    @PostMapping("/api/{path}")
+    public Map<String, Object> api(@PathVariable("path") String path, @RequestBody Object obj) {
+        Map<String, Object> res = new HashMap<String, Object>();
+        return res;
     }
 }
