@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ProtoSocket | Protobuffer + WebSockets</title>
+    <script src="websock.js" type="module"></script>
+    <style>
+        input {
+            border-radius: 7px;
+            height: 2em;
+            border: none;
+        }
+
+        h1 {
+            font-family: 'Trebuchet MS', sans-serif;
+            text-shadow: 1px 1px 5px rgb(255, 255, 255, 0.7);
+        }
+
+        body {
+            text-align: center;
+            color: white;
+            align-items: center;
+            background: #2C3E50;  /* fallback for old browsers */
+            background: -webkit-linear-gradient(to right, #FD746C, #2C3E50);  /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(to right, #FD746C, #2C3E50); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        }
+
+        button {
+
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to ProtoSocket!</h1>
+    <input type="" placeholder="Enter your message here!" id="message">
+    <button id="sendbtn">Send Message!</button>
+    <script type="module">
+        import { sendMessage } from './websock.js';
+
+        document.getElementById("sendbtn").addEventListener("click", () => {
+            sendMessage(document.getElementById("message").value);
+        })
+    </script>
+</body>
+</html>
